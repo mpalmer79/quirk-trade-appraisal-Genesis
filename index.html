@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -53,9 +52,21 @@
 <div>
 <label class="req" data-i18n="phoneLabel" for="phone">Phone Number</label>
 <div class="phone-wrapper">
-<input aria-describedby="phoneHint" autocomplete="tel" id="phone" inputmode="tel" name="phone" placeholder="(###) ###-####" required="" type="tel"/>
+  <input
+    aria-describedby="phoneHint"
+    autocomplete="tel"
+    id="phone"
+    inputmode="tel"
+    name="phone"
+    placeholder="(###) ###-####"
+    required
+    type="tel"
+    pattern="^\(\d{3}\)\s\d{3}-\d{4}$"
+  />
 </div>
-<div class="hint" data-i18n="phoneHint" id="phoneHint"></div>
+<div class="hint" data-i18n="phoneHint" id="phoneHint">
+  Enter a 10-digit US number. It will format automatically.
+</div>
 </div>
 </div>
 <div>
