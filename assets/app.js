@@ -407,3 +407,61 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+/* -------------------- Phone mask + strict 10-digit validation (ADDED) -------------------- */
+(function setupPhoneMask() {
+  const phoneEl = document.getElementById('phone');
+  const phoneRawEl = document.getElementById('phoneRaw');
+  const formEl = document.getElementById('tradeForm');
+
+  if (!phoneEl || !formEl) return;
+
+  // Format to "(xxx) xxx-xxxx" progressively; cap at 10 digits
+  function formatPhone(digits) {
+    const d = digits.slice(0, 10);
+    if (d.length === 0) return "";
+    if (d.length <= 3) return `(${d}`;
+    if (d.length <= 6) return `(${d.slice(0,3)}) ${d.slice(3)}`;
+    return `(${d.slice(0,3)}) ${d.slice(3,6)}-${d.slice(6)}`;
+  }
+
+  function setPhoneValidity(digits) {
+    if (digits.length === 10) {
+      phoneEl.setCustomValidity("");
+      phoneEl.removeAttribute("aria-invalid");
+    } else {
+      phoneEl.setCustomValidity("Please enter a valid 10-digit phone number.");
+      phoneEl.setAttribute("aria-invalid", "true");
+    }
+  }
+
+  function syncPhone(e) {
+    let digits = String(e.target.value).replace(/\D/g, "");
+    if (digits.length > 10) digits = digits.slice(0, 10);
+
+    e.target.value = formatPhone(digits);
+    if (phoneRawEl) phoneRawEl.value = digits;
+    setPhoneValidity(digits);
+  }
+
+  phoneEl.addEventListener("input", syncPhone);
+
+  phoneEl.addEventListener("blur", () => {
+    const digits = phoneEl.value.replace(/\D/g, "");
+    setPhoneValidity(digits);
+    if (!phoneEl.checkValidity()) phoneEl.reportValidity();
+  });
+
+  formEl.addEventListener("submit", (e) => {
+    const digits = phoneEl.value.replace(/\D/g, "");
+    if (digits.length !== 10) {
+      e.preventDefault();
+      setPhoneValidity(digits);
+      phoneEl.reportValidity();
+      phoneEl.focus();
+    }
+  });
+
+  // Initialize if a value is present (autofill/prefill)
+  syncPhone({ target: phoneEl });
+})();
