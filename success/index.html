@@ -5,6 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title data-i18n="successTitle">Thanks! - Genesis of Braintree</title>
   <link rel="stylesheet" href="/assets/styles.css" />
+  <style>
+    /* Subtle page watermark using your assets/quirk-lot.png */
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      /* light overlay keeps the watermark faint */
+      background:
+        linear-gradient(rgba(255,255,255,0.86), rgba(255,255,255,0.86)),
+        url("/assets/quirk-lot.png") center / cover no-repeat fixed;
+      background-color: #f3f4f6; /* fallback color */
+    }
+  </style>
 </head>
 <body>
   <main style="max-width:720px;margin:40px auto;background:#fff;padding:24px;
@@ -21,7 +33,9 @@
         Submit another vehicle
       </a>
       <a class="ghost-btn" href="https://www.genesisofbraintree.com" target="_blank" 
-         rel="noopener noreferrer" style="text-decoration:none" data-i18n="backToDealer"> Back to Genesis of Braintree </a>
+         rel="noopener noreferrer" style="text-decoration:none" data-i18n="backToDealer">
+        Back to Genesis of Braintree
+      </a>
     </div>
 
     <!-- Logo inside same white card -->
