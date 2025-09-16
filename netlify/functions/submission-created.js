@@ -47,8 +47,7 @@ export async function handler(event) {
       attachments = await processAttachments(files);
     } catch (error) {
       console.error("Failed to process attachments:", error);
-      // Decide if you still want to send the email without attachments
-      // For now, we'll continue and just log the error.
+      // Continue without attachments.
     }
   }
 
@@ -81,24 +80,33 @@ export async function handler(event) {
 
 /**
  * Creates the subject, HTML body, and text body for the email.
+ * Ensures Sales Consultant appears as the final row in the table.
  * @param {object} data - The form submission data.
  * @returns {{subject: string, htmlBody: string, textBody: string}}
  */
 function createEmailContent(data) {
-  const included = new Set(["form-name", "company", "bot-field", "honeypot"]);
+  // exclude meta/honeypot keys and handle salesConsultant separately
+  const excluded = new Set(["form-name", "company", "bot-field", "honeypot", "salesConsultant"]);
   const rows = [];
   const hasVal = (v) => v !== undefined && v !== null && String(v).trim() !== "";
 
-  // Sort keys for consistent email layout
+  // Sort keys for consistent email layout, excluding salesConsultant for now
   Object.keys(data).sort().forEach(k => {
-    if (included.has(k)) return;
+    if (excluded.has(k)) return;
     const v = data[k];
     if (hasVal(v)) {
       rows.push([k, Array.isArray(v) ? v.join(", ") : String(v)]);
     }
   });
 
-  const htmlEscape = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  // Append Sales Consultant at the bottom if present
+  const sc = data.salesConsultant || data.SalesConsultant; // support either casing just in case
+  if (hasVal(sc)) {
+    rows.push(["SalesConsultant", String(sc)]);
+  }
+
+  const htmlEscape = (s) =>
+    String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
   const htmlBody = `
     <h2 style="margin:0 0 12px 0;font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial;">New Trade-In Lead</h2>
@@ -154,9 +162,6 @@ async function processAttachments(files) {
       totalSize += size;
 
       return {
-        // *** THIS IS THE FIX ***
-        // The original code had `Buffer.from(buffer)`, which is incorrect.
-        // `buffer` is already a Buffer, so we just need to Base64-encode it.
         content: buffer.toString("base64"),
         filename: file.filename,
         type: file.type || "application/octet-stream",
