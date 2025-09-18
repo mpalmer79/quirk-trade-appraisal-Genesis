@@ -3,17 +3,27 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>Sight Unseen Trade-In – Genesis of Braintree</title>
+<title>Sight Unseen Trade-In – Quirk Genesis</title>
 <meta content="noindex" name="robots"/>
 <link href="https://vpic.nhtsa.dot.gov" rel="preconnect"/>
 <link href="assets/styles.css?v=2" rel="stylesheet"/>
 
-<!-- Mobile-only header fix: stack logo above title and center both -->
+<!-- Watermark background across the whole page -->
 <style>
+  /* Page-wide watermark image with soft white wash so the form stays readable */
+  body {
+    min-height: 100vh;
+    background:
+      /* 80% white wash over the image */
+      linear-gradient(rgba(255,255,255,.80), rgba(255,255,255,.80)),
+      url('assets/quirk-lot3.webp') center / cover no-repeat fixed;
+  }
+
+  /* Mobile-only header fix: stack logo above title and center both */
   @media (max-width: 640px) {
     .header-title{
-      display:flex;              /* enable clean stacking on phones */
-      flex-direction:column;     /* logo on top, title underneath */
+      display:flex;              /* ensure we can stack cleanly on phones */
+      flex-direction:column;     /* logo on top, title under it */
       align-items:center;        /* center horizontally */
       text-align:center;         /* center the title text */
       gap:10px;
@@ -25,28 +35,26 @@
       margin:0;
     }
     #quirkBrand{
-      margin:0 auto;             /* ensure centered */
-      max-width:220px;           /* keep the logo from getting too large */
+      margin:0 auto;             /* center the branding block */
+      max-width:220px;           /* keep the logo from getting huge */
     }
     .header-title h1{
-      margin:0;                  /* tighten spacing below the logo */
-      line-height:1.2;
+      margin:0;                  /* tighten spacing under the logo */
       text-align:center;
+      line-height:1.2;
     }
   }
 </style>
 </head>
 <body>
 <!-- 
-    Final Version:
-    1. The 'netlify' attribute tells Netlify to process the form.
-    2. The 'action="/success/index.html"' attribute now points directly to the success file.
-  -->
+  Netlify form handler + our serverless function endpoint.
+-->
 <form action="/.netlify/functions/trade-appraisal" enctype="multipart/form-data" id="tradeForm" method="post" netlify-honeypot="company">
-  <!-- This is the honeypot field to catch bots -->
+  <!-- Honeypot -->
   <input autocomplete="off" name="company" style="position:absolute; left:-10000px; opacity:0; height:0; width:0;" tabindex="-1" type="text"/>
 
-  <!-- These hidden fields will be populated by app.js -->
+  <!-- Populated by app.js -->
   <input id="referrer" name="referrer" type="hidden"/>
   <input id="landingPage" name="landingPage" type="hidden"/>
   <input id="utmSource" name="utmSource" type="hidden"/>
@@ -63,7 +71,7 @@
     <h1 data-i18n="title">Sight Unseen Trade-In Appraisal</h1>
   </div>
 
-  <p class="lead welcome text" data-i18n="welcome">Welcome to the Genesis of Braintree Sight Unseen Appraisal Program</p>
+  <p class="lead welcome text" data-i18n="welcome">Welcome to Quirk Genesis’ Sight Unseen Appraisal Program</p>
   <p data-i18n="instructions">Please fill out this form with accurate and complete details about your vehicle. The trade-in value we provide will be honored as long as the vehicle condition matches your answers. We'll verify everything when you bring the vehicle in. If the condition differs, the offer will be adjusted accordingly.</p>
 
   <div class="utilitybar">
@@ -78,7 +86,6 @@
 
   <div class="section">
     <h2 data-i18n="aboutYou">Tell us about Yourself</h2>
-
     <div class="row">
       <div>
         <label class="req" data-i18n="nameLabel" for="name">Full Name</label>
@@ -86,21 +93,9 @@
         <div>
           <label class="req" data-i18n="phoneLabel" for="phone">Phone Number</label>
           <div class="phone-wrapper">
-            <input
-              aria-describedby="phoneHint"
-              autocomplete="tel"
-              id="phone"
-              inputmode="tel"
-              name="phone"
-              placeholder="(###) ###-####"
-              required
-              type="tel"
-              pattern="^\(\d{3}\)\s\d{3}-\d{4}$"
-            />
+            <input aria-describedby="phoneHint" autocomplete="tel" id="phone" inputmode="tel" name="phone" placeholder="(###) ###-####" required type="tel"/>
           </div>
-          <div class="hint" data-i18n="phoneHint" id="phoneHint">
-            Enter a 10-digit US number. It will format automatically.
-          </div>
+          <div class="hint" data-i18n="phoneHint" id="phoneHint"></div>
         </div>
       </div>
 
@@ -108,14 +103,9 @@
         <label class="req" data-i18n="emailLabel" for="email">Email Address</label>
         <input autocomplete="email" id="email" name="email" required type="email"/>
 
-        <!-- Sales consultant (optional; same placement as Marshfield) -->
+        <!-- Sales consultant (optional) -->
         <label for="salesConsultant" data-i18n="consultantLabel">Who is your sales consultant?</label>
-        <input
-          id="salesConsultant"
-          name="salesConsultant"
-          type="text"
-          placeholder="Who have you been working with?"
-        />
+        <input id="salesConsultant" name="salesConsultant" type="text" placeholder="Who have you been working with?"/>
       </div>
     </div>
   </div>
@@ -259,6 +249,7 @@
   <fieldset class="section">
     <legend class="visually-hidden">Photo Uploads</legend>
     <h2 data-i18n="photos">Photo Uploads (Optional)</h2>
+
     <label data-i18n="photosExterior">Exterior Photos</label>
     <input accept="image/*" id="photoExterior" multiple name="photoExterior" type="file"/>
     <div aria-live="polite" class="preview-grid" id="prevExterior"></div>
@@ -288,7 +279,7 @@
   </div>
 
   <button data-i18n="submit" id="submitBtn" type="submit">Get My Trade Appraisal</button>
-  <div class="smallprint">By submitting, authorization is given for Genesis of Braintree to contact you about your vehicle's appraisal. We respect your privacy and will not send unwanted messages.</div>
+  <div class="smallprint">By submitting, authorization is given for Quirk Genesis to contact you about your vehicle's appraisal. We respect your privacy and will not send unwanted messages.</div>
 </form>
 
 <div aria-live="polite" class="toast" id="toast" role="status"></div>
